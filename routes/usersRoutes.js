@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 const usersRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
@@ -8,8 +7,8 @@ usersRouter.get('/users/me', getUsersMe);
 
 usersRouter.patch('/users/me', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().email(),
-    name: Joi.string().min(2).max(30),
+    email: Joi.string().email().required(),
+    name: Joi.string().min(2).max(30).required(),
   }),
 }, {
   params: Joi.object().keys({

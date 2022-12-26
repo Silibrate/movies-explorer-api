@@ -1,12 +1,12 @@
-const movesRouter = require('express').Router();
+const moviesRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { createMove, getMove, removeMove } = require('../controllers/move');
+const { createMovie, getMovie, removeMovie } = require('../controllers/movie');
 
 const url = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
 
-movesRouter.get('/movies', getMove);
+moviesRouter.get('/movies', getMovie);
 
-movesRouter.post('/movies', celebrate({
+moviesRouter.post('/movies', celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
@@ -18,11 +18,11 @@ movesRouter.post('/movies', celebrate({
     thumbnail: Joi.string().required().pattern(url),
     movieId: Joi.number().required().unsafe().integer(),
     nameRU: Joi.string().required(),
-    nameEn: Joi.string().required(),
-  }).unknown(true),
-}), createMove);
+    nameEN: Joi.string().required(),
+  }),
+}), createMovie);
 
-movesRouter.delete('/movies/:movieId', celebrate({
+moviesRouter.delete('/movies/:movieId', celebrate({
   params: Joi.object().keys({
     movieId: Joi.string()
       .alphanum()
@@ -30,6 +30,6 @@ movesRouter.delete('/movies/:movieId', celebrate({
       .required()
       .length(24),
   }),
-}), removeMove);
+}), removeMovie);
 
-module.exports = movesRouter;
+module.exports = moviesRouter;

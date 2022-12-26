@@ -3,7 +3,7 @@ const validator = require('validator');
 
 const { Schema } = mongoose;
 
-const moveSchema = new Schema({
+const movieSchema = new Schema({
   country: {
     type: String,
     required: true,
@@ -67,10 +67,10 @@ const moveSchema = new Schema({
     type: String,
     required: true,
   },
-  nameEn: {
+  nameEN: {
     type: String,
     required: true,
   },
 }, { versionKey: false });
 
-module.exports = mongoose.model('move', moveSchema);
+module.exports = mongoose.model('movie', movieSchema);

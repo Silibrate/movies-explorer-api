@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const express = require('express');
 require('dotenv').config();
 
@@ -8,7 +7,7 @@ const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const usersRouter = require('./routes/usersRoutes');
-const movesRouter = require('./routes/movesRouter');
+const moviesRouter = require('./routes/moviesRouter');
 const { createUser, login } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
@@ -35,7 +34,7 @@ app.post('/signin', celebrate({
 
 app.use(auth);
 app.use(usersRouter);
-app.use(movesRouter);
+app.use(moviesRouter);
 
 app.use(errorLogger);
 
@@ -48,7 +47,7 @@ app.use((err, req, res, next) => {
     return res.status(500).send({ message: err.message });
   }
   res.status(err.statusCode).send({ message: err.message });
-  next();
+  return next();
 });
 
 app.listen(PORT, () => {

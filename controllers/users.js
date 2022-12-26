@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
@@ -7,7 +6,6 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -46,20 +44,18 @@ const getUsersMe = (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const { name, email } = await req.body;
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      throw (new NotFoundError('Пользователь не найден'));
-    }
+    const { name, email } = req.body;
     const newUser = await User.findByIdAndUpdate(
       req.user._id,
       { name, email },
       { new: true, runValidators: true },
     );
-    res.send(newUser);
+    return res.send(newUser);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError || e instanceof mongoose.Error.CastError) {
       return next(new BadRequestError('Ошибка валидации. Переданные данные не корректны'));
+    } if (e.code === 11000) {
+      return next(new ConflictError('Пользователь с таким email уже существует!'));
     }
     return next(e);
   }
@@ -84,7 +80,7 @@ const login = (req, res, next) => {
           return res.status(200).send({ token });
         });
     })
-    .catch((e) => next(new UnauthorizedError(`${e.message}`)));
+    .catch(next);
 };
 
 module.exports = {
