@@ -34,7 +34,7 @@ const createMovie = (req, res, next) => {
 };
 
 const getMovie = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: `${req.user._id}` })
     .then((movie) => {
       res.status(200).send(movie);
     })
@@ -54,7 +54,7 @@ const removeMovie = async (req, res, next) => {
       }
       throw new ForbiddenError('Нельзя удалять чужие фильмы');
     })
-    .then(() => res.send([]))
+    .then(() => res.send({ massage: 'Фильм удален' }))
     .catch((e) => {
       if (e instanceof mongoose.Error.CastError) {
         return next(new BadRequestError('Не корректный id'));
